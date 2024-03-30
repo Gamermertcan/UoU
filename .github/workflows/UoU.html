@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="CONTENT-TYPE" content="text/html; charset=UTF-8">
+  <title>UoU</title>
+  
+  <style>
+    div {
+      color: #aa2c00;
+      font-size: 50px;
+      cursor: pointer;
+    }
+    #UoU {
+      left: 50%;
+      transform: translate(-50%);
+      top: -10px;
+      position: fixed;
+      width: 100px;
+      height: 100px;
+    }
+    #score {
+      color: #000000; /* Cooldown sırasında skor rengi */
+    }
+  </style>
+</head>
+<body style="background: #ff6c00;">
+  <div onclick="reset()" align=center style="color: #FF0000; position: fixed; font-size: 20px; width: 80px; border: 5px solid #FF0000;">Reset Account</div>
+  <img id="UoU" src="img/UoU.gif">
+  <div onclick="increaseScore()" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);" id="score"></div>
+  
+  <script>
+    var accPoint = localStorage.getItem("accPoint");
+    var point = 1;
+    var canClick = true; // Tıklamaya izin veren kontrol değişkeni
+    if (accPoint !== null && accPoint !== 'undefined' && accPoint !== '0') {
+      point = parseInt(accPoint);
+    }
+    function increaseScore() {
+      if (canClick) {
+        var maxScore = point * 2;
+        var minScore = point / 4;
+        point = Math.floor(Math.random() * (maxScore - minScore + 1) + minScore);
+        updateScore();
+        canClick = false; // Tıklama yapıldığında false yaparak cooldown başlat
+        document.getElementById("score").style.color = "#000000"; // Skor rengini siyah yap
+        setTimeout(function () {
+          canClick = true; // 5 saniye sonra tekrar true yaparak cooldown bitir
+          document.getElementById("score").style.color = "#aa2c00"; // Skor rengini eski haline getir
+        }, 5000); // 5 saniyelik cooldown
+      }
+    }
+    function updateScore() {
+      if (point === 0) {
+        point = 1;
+      }
+      document.getElementById("score").innerHTML = "U" + point + "U";
+      localStorage.setItem("accPoint", point);
+    }
+    setInterval(updateScore, 10);
+    
+    function reset() {
+      localStorage.setItem("accPoint", 1);
+      point = 1;
+    }
+  </script>
+</body>
+</html>
